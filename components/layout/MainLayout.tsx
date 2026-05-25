@@ -7,13 +7,7 @@ import Footer from "@/components/layout/Footer";
 
 import { supabase } from "@/lib/supabase";
 
-const SAMPLE_CATEGORIES = [
-  { ten: "Bia Nhập Khẩu", slug: "bia-nhap-khau", photo: "" },
-  { ten: "Rượu Vang", slug: "ruou-vang", photo: "" },
-  { ten: "Nước Ngọt", slug: "nuoc-ngot", photo: "" },
-  { ten: "Whisky", slug: "whisky", photo: "" },
-  { ten: "Nước Tăng Lực", slug: "nuoc-tang-luc", photo: "" },
-];
+
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -29,6 +23,10 @@ export default async function MainLayout({ children, hideFooterMap = false }: Ma
       settings[item.key] = item.value;
     });
   }
+
+  // Fetch categories từ Supabase
+  const { data: categoriesData } = await supabase.from("categories").select("*").order("id", { ascending: true });
+  const categories = categoriesData || [];
 
   const logoHeader = settings.logo_header || "/andam-logo.png";
   const logoFooter = settings.logo_footer || "/andam-logo.png";
@@ -46,12 +44,12 @@ export default async function MainLayout({ children, hideFooterMap = false }: Ma
       <TopBar />
 
       {/* Header / Navbar cố định khi scroll */}
-      <Navbar logo={logoHeader} categories={SAMPLE_CATEGORIES} />
+      <Navbar logo={logoHeader} categories={categories} />
 
       {/* Body layout: LeftSidebar + nội dung chính */}
       <div className="flex xl:pl-[72px] flex-1">
         {/* Cột trái cố định - chỉ hiện trên màn hình xl trở lên */}
-        <LeftSidebar logo={logoHeader} categories={SAMPLE_CATEGORIES} />
+        <LeftSidebar logo={logoHeader} categories={categories} />
 
         {/* Nội dung chính của trang */}
         <main className="flex-1 min-h-screen overflow-x-hidden">

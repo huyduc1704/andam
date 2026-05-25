@@ -1,33 +1,30 @@
 import MainLayout from "@/components/layout/MainLayout";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FaShoppingCart, FaCheckCircle, FaMinus, FaPlus } from "react-icons/fa";
+import { FaShoppingCart, FaCheckCircle } from "react-icons/fa";
+import { supabase } from "@/lib/supabase";
 
-// Mock data
-const SAMPLE_PRODUCTS = [
-  { id: 1, ten: "Bia Đen Belgium", gia: 150000, photo: "/belgium.jpg", slug: "bia-den-belgium", category: "Bia Nhập Khẩu", desc: "Bia đen đậm đà hương vị truyền thống Bỉ. Phù hợp cho những bữa tiệc sang trọng." },
-  { id: 2, ten: "Bia Đen Đức", gia: 120000, photo: "/duc.jpg", slug: "bia-den-duc", category: "Bia Nhập Khẩu", desc: "Sản xuất từ hoa bia tươi Đức, hương thơm nhẹ nhàng và vị đắng nhẹ đặc trưng." },
-  { id: 3, ten: "Rượu Vang Đỏ Pháp", gia: 350000, giakm: 299000, photo: "/ruouvangdo.jpg", slug: "ruou-vang-do-phap", category: "Rượu Vang", desc: "Rượu vang đỏ cao cấp từ vùng Bordeaux nước Pháp. Phù hợp cho bữa tối lãng mạn." },
-  { id: 4, ten: "Rượu Vang Ý", gia: 420000, giakm: 369000, photo: "/ruouvangdo.jpg", slug: "ruou-vang-y", category: "Rượu Vang", desc: "Tuyệt tác từ Ý, vị chát mượt mà kết hợp hương trái cây nhiệt đới." },
-];
+export const revalidate = 0;
 
 function formatPrice(price: number) {
-  return price.toLocaleString("vi-VN") + "đ";
+  return price ? price.toLocaleString("vi-VN") + "đ" : "-";
 }
 
 export default async function ProductDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = await params;
 
-  // Lấy chi tiết sản phẩm (mock)
-  const product = SAMPLE_PRODUCTS.find(p => p.slug === slug);
+  // Lấy chi tiết sản phẩm từ Supabase
+  const { data: product } = await supabase
+    .from("products")
+    .select("*, categories(ten)")
+    .eq("slug", slug)
+    .single();
   
   if (!product) {
-    // Để demo, nếu không tìm thấy slug, hiển thị tạm sản phẩm đầu tiên
-    // notFound();
+    notFound();
   }
-  
-  const displayProduct = product || SAMPLE_PRODUCTS[0];
+
+  const categoryName = product.categories?.ten || product.category_slug;
 
   return (
     <MainLayout>
@@ -40,7 +37,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
             <span>/</span>
             <Link href="/san-pham" className="hover:text-[#b3000f] transition-colors">Sản phẩm</Link>
             <span>/</span>
-            <span className="text-[#b3000f]">{displayProduct.category}</span>
+            <span className="text-[#b3000f]">{categoryName}</span>
           </nav>
 
           {/* Chi tiết sản phẩm */}
@@ -50,11 +47,11 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
               {/* Cột trái: Ảnh */}
               <div className="relative aspect-square md:aspect-auto md:h-[500px] rounded-xl overflow-hidden border border-gray-100 p-4">
                 <img
-                  src={displayProduct.photo}
-                  alt={displayProduct.ten}
+                  src={product.photo || "/placeholder.jpg"}
+                  alt={product.ten}
                   className="w-full h-full object-contain"
                 />
-                {displayProduct.giakm && (
+                {product.giakm && (
                   <span className="absolute top-4 left-4 bg-[#b3000f] text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
                     GIẢM GIÁ
                   </span>
@@ -64,23 +61,23 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
               {/* Cột phải: Thông tin */}
               <div className="flex flex-col justify-center">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
-                  {displayProduct.ten}
+                  {product.ten}
                 </h1>
                 
                 <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
-                  {displayProduct.giakm ? (
+                  {product.giakm ? (
                     <>
-                      <span className="text-3xl font-bold text-[#b3000f]">{formatPrice(displayProduct.giakm)}</span>
-                      <span className="text-xl text-gray-400 line-through">{formatPrice(displayProduct.gia)}</span>
+                      <span className="text-3xl font-bold text-[#b3000f]">{formatPrice(product.giakm)}</span>
+                      <span className="text-xl text-gray-400 line-through">{formatPrice(product.gia)}</span>
                     </>
                   ) : (
-                    <span className="text-3xl font-bold text-[#b3000f]">{formatPrice(displayProduct.gia)}</span>
+                    <span className="text-3xl font-bold text-[#b3000f]">{formatPrice(product.gia)}</span>
                   )}
                 </div>
 
                 <div className="space-y-4 mb-8">
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {displayProduct.desc}
+                  <p className="text-gray-600 leading-relaxed text-lg whitespace-pre-wrap">
+                    {product.description || "Đang cập nhật mô tả..."}
                   </p>
                   <ul className="space-y-2 mt-4 text-gray-700">
                     <li className="flex items-center gap-2"><FaCheckCircle className="text-green-500" /> Cam kết hàng chính hãng 100%</li>
