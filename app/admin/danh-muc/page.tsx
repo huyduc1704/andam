@@ -6,8 +6,10 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 export default function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Fetch categories
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState({ ten: "", slug: "" });
+  const [saving, setSaving] = useState(false);
   const fetchCategories = async () => {
     setLoading(true);
     const { data, error } = await supabase.from("categories").select("*").order("id", { ascending: false });
@@ -21,6 +23,60 @@ export default function AdminCategories() {
     fetchCategories();
   }, []);
 
+  const handleOpenModal = (cat: any = null) => {
+    if (cat) {
+      setEditingId(cat.id);
+      setFormData({ ten: cat.ten, slug: cat.slug });
+    } else {
+      setEditingId(null);
+      setFormData({ ten: "", slug: "" });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setFormData({ ten: "", slug: "" });
+    setEditingId(null);
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    
+    if (editingId) {
+      // Update
+      const { error } = await supabase.from("categories").update(formData).eq("id", editingId);
+      if (error) alert("Lỗi khi cập nhật: " + error.message);
+      else {
+        alert("Cập nhật thành công!");
+        handleCloseModal();
+        fetchCategories();
+      }
+    } else {
+      // Insert
+      const { error } = await supabase.from("categories").insert([formData]);
+      if (error) alert("Lỗi khi thêm mới: " + error.message);
+      else {
+        alert("Thêm mới thành công!");
+        handleCloseModal();
+        fetchCategories();
+      }
+    }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Bạn có chắc chắn muốn xóa danh mục này?")) {
+      const { error } = await supabase.from("categories").delete().eq("id", id);
+      if (error) alert("Lỗi khi xóa: " + error.message);
+      else {
+        alert("Xóa thành công!");
+        fetchCategories();
+      }
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -28,7 +84,10 @@ export default function AdminCategories() {
           <h1 className="text-3xl font-bold text-gray-800">Quản lý Danh mục</h1>
           <p className="text-gray-500 mt-2">Thêm, sửa, xóa danh mục sản phẩm (cấp 1).</p>
         </div>
-        <button className="bg-[#b3000f] hover:bg-[#8b000c] text-white px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm">
+        <button 
+          onClick={() => handleOpenModal()}
+          className="bg-[#b3000f] hover:bg-[#8b000c] text-white px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm"
+        >
           <FaPlus /> Thêm Danh mục
         </button>
       </div>
@@ -61,10 +120,18 @@ export default function AdminCategories() {
                     <td className="py-4 px-6 text-gray-500">{cat.slug}</td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex justify-end gap-3">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Sửa">
+                        <button 
+                          onClick={() => handleOpenModal(cat)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors" 
+                          title="Sửa"
+                        >
                           <FaEdit />
                         </button>
-                        <button className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors" title="Xóa">
+                        <button 
+                          onClick={() => handleDelete(cat.id)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors" 
+                          title="Xóa"
+                        >
                           <FaTrash />
                         </button>
                       </div>
@@ -76,6 +143,63 @@ export default function AdminCategories() {
           </table>
         </div>
       </div>
+
+      {/* Modal Thêm/Sửa */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="font-bold text-lg text-gray-800">
+                {editingId ? "Cập nhật Danh mục" : "Thêm Danh mục mới"}
+              </h3>
+              <button onClick={handleCloseModal} className="text-gray-400 hover:text-red-500 transition-colors text-2xl leading-none">&times;</button>
+            </div>
+            <form onSubmit={handleSave} className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Tên Danh mục</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.ten}
+                    onChange={(e) => setFormData({...formData, ten: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#b3000f] outline-none"
+                    placeholder="VD: Bia Nhập Khẩu"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Đường dẫn (Slug)</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.slug}
+                    onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#b3000f] outline-none"
+                    placeholder="VD: bia-nhap-khau"
+                  />
+                </div>
+              </div>
+              <div className="mt-8 flex justify-end gap-3">
+                <button 
+                  type="button" 
+                  onClick={handleCloseModal}
+                  className="px-5 py-2 rounded-lg text-gray-600 hover:bg-gray-100 font-medium transition-colors"
+                >
+                  Hủy
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={saving}
+                  className="bg-[#b3000f] hover:bg-[#8b000c] text-white px-5 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+                >
+                  {saving ? "Đang lưu..." : "Lưu Danh Mục"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

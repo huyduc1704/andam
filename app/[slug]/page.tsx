@@ -11,7 +11,7 @@ const CATEGORIES = [
   { ten: "Nước Tăng Lực", slug: "nuoc-tang-luc" },
 ];
 
-const SAMPLE_PRODUCTS: Product[] = [
+const SAMPLE_PRODUCTS: any[] = [
   { id: 1, ten: "Bia Đen Belgium", gia: 150000, photo: "/belgium.jpg", slug: "bia-den-belgium", category: "bia-nhap-khau" },
   { id: 2, ten: "Bia Đen Đức", gia: 120000, photo: "/duc.jpg", slug: "bia-den-duc", category: "bia-nhap-khau" },
   { id: 3, ten: "Rượu Vang Đỏ Pháp", gia: 350000, giakm: 299000, photo: "/ruouvangdo.jpg", slug: "ruou-vang-do-phap", category: "ruou-vang" },
