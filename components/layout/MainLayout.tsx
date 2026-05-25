@@ -58,7 +58,7 @@ export default async function MainLayout({ children, hideFooterMap = false }: Ma
       </div>
 
       {/* Footer */}
-      <Footer logo={logoFooter} hideMapAndContact={hideFooterMap} />
+      <Footer logo={logoFooter} />
     </div>
   );
 }
