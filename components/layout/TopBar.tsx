@@ -25,9 +25,7 @@ export default function TopBar({
     <div
       className="top-bar-andam"
       style={{
-        backgroundImage: "url('/background-header-footer.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        background: "#b30013",
       }}
     >
       <div className="max-w-[1280px] mx-auto px-4 flex justify-between items-center py-2">

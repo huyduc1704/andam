@@ -156,14 +156,15 @@ export default function HomeSections({
       <section
         className="relative h-[480px] flex items-center my-4 overflow-hidden"
         style={{
-          backgroundImage: "url('/banner-khampha.jpg')",
+          backgroundImage: "url('/background-khampha.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: "fixed",
         }}
       >
-        {/* Overlay tối */}
-        <div className="absolute inset-0 bg-black/55" />
+        {/* Overlay gradient nhẹ để chữ dễ đọc mà ảnh vẫn sáng */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/10 to-transparent" />
+
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4">
           <div className="max-w-lg">
             <h2 className="text-4xl font-bold text-white mb-3 leading-tight">
@@ -182,22 +183,14 @@ export default function HomeSections({
         </div>
       </section>
 
-      {/* ===== SECTION: MAP & LIÊN HỆ ===== */}
-      <ContactSection />
-
       {/* ===== SECTION: ĐỐI TÁC / THƯƠNG HIỆU ===== */}
       {partners.length > 0 && (
         <section className="py-10 bg-white/80 backdrop-blur-sm overflow-hidden">
-          <div className="max-w-[1280px] mx-auto px-4 mb-6 text-center">
-            <h2 className="text-2xl font-bold text-gray-700 uppercase tracking-widest">
-              Đối Tác & Thương Hiệu
-            </h2>
-            <div className="w-12 h-1 bg-[#b3000f] mx-auto mt-2 rounded-full" />
-          </div>
+
           {/* Auto-scroll strip */}
           <div
             ref={partnerRef}
-            className="flex overflow-x-hidden gap-8 items-center px-4"
+            className="flex overflow-x-hidden gap-12 sm:gap-16 lg:gap-24 items-center px-4"
             style={{ scrollbarWidth: "none" }}
           >
             {/* Double list để tạo vòng lặp vô tận */}
@@ -206,14 +199,17 @@ export default function HomeSections({
                 key={idx}
                 href={p.link || "#"}
                 target="_blank"
-                className="flex-shrink-0 grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
+                className="flex-shrink-0 block"
               >
-                <img src={p.photo} alt={p.ten} className="h-12 w-auto object-contain" />
+                <img src={p.photo} alt={p.ten} className="h-20 sm:h-24 md:h-32 lg:h-36 w-auto object-contain" />
               </Link>
             ))}
           </div>
         </section>
       )}
+
+      {/* ===== SECTION: MAP & LIÊN HỆ ===== */}
+      <ContactSection />
     </>
   );
 }

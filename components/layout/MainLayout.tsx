@@ -4,6 +4,7 @@ import TopBar from "@/components/layout/TopBar";
 import Navbar from "@/components/layout/Navbar";
 import LeftSidebar from "@/components/layout/LeftSidebar";
 import Footer from "@/components/layout/Footer";
+import FloatingIcons from "@/components/layout/FloatingIcons";
 
 import { supabase } from "@/lib/supabase";
 
@@ -25,8 +26,12 @@ export default async function MainLayout({ children, hideFooterMap = false }: Ma
   }
 
   // Fetch categories từ Supabase
-  const { data: categoriesData } = await supabase.from("categories").select("*").order("id", { ascending: true });
+  const { data: categoriesData } = await supabase.from("categories").select("*").eq("active", true).order("id", { ascending: true });
   const categories = categoriesData || [];
+
+  // Fetch sidebar items
+  const { data: sidebarItemsData } = await supabase.from("sidebar_items").select("*").eq("active", true).order("order_num", { ascending: true }).order("id", { ascending: true });
+  const sidebarItems = sidebarItemsData || [];
 
   const logoHeader = settings.logo_header || "/andam-logo.png";
   const logoFooter = settings.logo_footer || "/andam-logo.png";
@@ -49,7 +54,7 @@ export default async function MainLayout({ children, hideFooterMap = false }: Ma
       {/* Body layout: LeftSidebar + nội dung chính */}
       <div className="flex xl:pl-[72px] flex-1">
         {/* Cột trái cố định - chỉ hiện trên màn hình xl trở lên */}
-        <LeftSidebar logo={logoHeader} categories={categories} />
+        <LeftSidebar logo={logoHeader} items={sidebarItems} />
 
         {/* Nội dung chính của trang */}
         <main className="flex-1 min-h-screen overflow-x-hidden">
@@ -59,6 +64,9 @@ export default async function MainLayout({ children, hideFooterMap = false }: Ma
 
       {/* Footer */}
       <Footer logo={logoFooter} />
+      
+      {/* Icon Nổi */}
+      <FloatingIcons />
     </div>
   );
 }

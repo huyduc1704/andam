@@ -6,25 +6,27 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { FaWineGlassAlt } from "react-icons/fa";
 
-interface Category {
-  ten: string;
-  slug: string;
-  photo?: string;
+interface SidebarItem {
+  id: number;
+  name: string;
+  link: string;
+  icon_url: string;
+  active: boolean;
 }
 
 interface LeftSidebarProps {
   logo?: string;
-  categories?: Category[];
+  items?: SidebarItem[];
 }
 
 export default function LeftSidebar({
   logo = "/logo.png",
-  categories = [],
+  items = [],
 }: LeftSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="left-fixed-menu hidden xl:flex flex-col items-center py-4 w-[72px] fixed left-0 top-0 h-screen bg-white border-r border-gray-200 shadow-md z-[60] overflow-y-auto overflow-x-hidden">
+    <aside className="left-fixed-menu hidden xl:flex flex-col items-center py-4 w-[72px] fixed left-0 top-0 h-[80vh] bg-white border-r border-b border-gray-200 shadow-md z-[60] overflow-y-auto overflow-x-hidden">
       {/* Logo nhỏ */}
       <div className="mb-5 px-2">
         <Link href="/" aria-label="Trang chủ">
@@ -39,22 +41,21 @@ export default function LeftSidebar({
         </Link>
       </div>
 
-      {/* Danh sách danh mục */}
+      {/* Danh sách Sidebar Items */}
       <ul className="list-none m-0 p-0 text-center w-full space-y-3">
-        {categories.map((cat) => {
-          const isActive = pathname.startsWith(`/${cat.slug}`);
+        {items.map((item) => {
+          const isActive = pathname.startsWith(item.link) && item.link !== "/";
           return (
-            <li key={cat.slug}>
+            <li key={item.id}>
               <Link
-                href={`/${cat.slug}`}
-                title={cat.ten}
-                className={`flex flex-col items-center justify-center mx-auto w-[52px] h-[52px] rounded-xl transition-all duration-200 group relative
-                  ${isActive ? "bg-[#b3000f]" : "hover:bg-red-50"}`}
+                href={item.link}
+                title={item.name}
+                className="flex flex-col items-center justify-center mx-auto w-[52px] h-[52px] rounded-xl transition-all duration-200 group relative hover:scale-110 hover:bg-gray-50"
               >
-                {cat.photo ? (
+                {item.icon_url ? (
                   <Image
-                    src={`/upload/product/${cat.photo}`}
-                    alt={cat.ten}
+                    src={item.icon_url}
+                    alt={item.name}
                     width={32}
                     height={32}
                     className="object-contain"
@@ -66,9 +67,9 @@ export default function LeftSidebar({
                   />
                 )}
 
-                {/* Tooltip tên danh mục */}
+                {/* Tooltip tên item */}
                 <span className="absolute left-full ml-2 px-2 py-1 text-xs text-white bg-[#b3000f] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
-                  {cat.ten}
+                  {item.name}
                 </span>
               </Link>
             </li>

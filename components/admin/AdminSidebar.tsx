@@ -1,13 +1,16 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaBox, FaList, FaImages, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaBox, FaList, FaImages, FaCog, FaSignOutAlt, FaGlobe, FaBars, FaHandshake } from "react-icons/fa";
 
 const ADMIN_LINKS = [
   { name: "Tổng quan", href: "/admin", icon: FaHome },
   { name: "Danh mục", href: "/admin/danh-muc", icon: FaList },
   { name: "Sản phẩm", href: "/admin/san-pham", icon: FaBox },
   { name: "Slideshow", href: "/admin/slides", icon: FaImages },
+  { name: "Quản lý Icon Nổi", href: "/admin/icons", icon: FaGlobe },
+  { name: "Menu Trái", href: "/admin/sidebar", icon: FaBars },
+  { name: "Đối Tác", href: "/admin/doi-tac", icon: FaHandshake },
   { name: "Cấu hình chung", href: "/admin/cai-dat", icon: FaCog },
 ];
 

@@ -8,7 +8,7 @@ export default function AdminCategories() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({ ten: "", slug: "" });
+  const [formData, setFormData] = useState({ ten: "", slug: "", active: true });
   const [saving, setSaving] = useState(false);
   const fetchCategories = async () => {
     setLoading(true);
@@ -26,17 +26,17 @@ export default function AdminCategories() {
   const handleOpenModal = (cat: any = null) => {
     if (cat) {
       setEditingId(cat.id);
-      setFormData({ ten: cat.ten, slug: cat.slug });
+      setFormData({ ten: cat.ten, slug: cat.slug, active: cat.active !== false });
     } else {
       setEditingId(null);
-      setFormData({ ten: "", slug: "" });
+      setFormData({ ten: "", slug: "", active: true });
     }
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setFormData({ ten: "", slug: "" });
+    setFormData({ ten: "", slug: "", active: true });
     setEditingId(null);
   };
 
@@ -100,6 +100,7 @@ export default function AdminCategories() {
                 <th className="py-4 px-6 font-semibold text-gray-700 text-sm w-16">ID</th>
                 <th className="py-4 px-6 font-semibold text-gray-700 text-sm">Tên Danh mục</th>
                 <th className="py-4 px-6 font-semibold text-gray-700 text-sm">Đường dẫn (Slug)</th>
+                <th className="py-4 px-6 font-semibold text-gray-700 text-sm">Trạng thái</th>
                 <th className="py-4 px-6 font-semibold text-gray-700 text-sm text-right">Thao tác</th>
               </tr>
             </thead>
@@ -118,6 +119,11 @@ export default function AdminCategories() {
                     <td className="py-4 px-6 text-gray-600">{cat.id}</td>
                     <td className="py-4 px-6 font-medium text-gray-800">{cat.ten}</td>
                     <td className="py-4 px-6 text-gray-500">{cat.slug}</td>
+                    <td className="py-4 px-6">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${cat.active !== false ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                        {cat.active !== false ? "Hiển thị" : "Đang ẩn"}
+                      </span>
+                    </td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex justify-end gap-3">
                         <button 
@@ -177,6 +183,17 @@ export default function AdminCategories() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#b3000f] outline-none"
                     placeholder="VD: bia-nhap-khau"
                   />
+                </div>
+                <div className="pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer font-medium text-gray-700">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.active} 
+                      onChange={(e) => setFormData({...formData, active: e.target.checked})} 
+                      className="w-5 h-5 accent-[#b3000f]" 
+                    />
+                    Hiển thị danh mục này ra ngoài web
+                  </label>
                 </div>
               </div>
               <div className="mt-8 flex justify-end gap-3">
