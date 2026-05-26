@@ -10,7 +10,12 @@
 
 body {
   font-family: var(--font-inter), Arial, sans-serif;
-  background: #ffffff;
+  background-image: url('/background_website.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #ffffff; /* fallback */
   color: #171717;
   margin: 0;
   padding: 0;
