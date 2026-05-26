@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={inter.variable}>
-      <body className="min-h-screen bg-white antialiased">
+      <body className="min-h-screen antialiased">
         {children}
       </body>
     </html>
