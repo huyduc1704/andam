@@ -26,7 +26,7 @@ export default function LeftSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="left-fixed-menu hidden xl:flex flex-col items-center py-4 w-[72px] fixed left-0 top-0 h-[80vh] bg-white border-r border-b border-gray-200 shadow-md z-[60] overflow-y-auto overflow-x-hidden">
+    <aside className="left-fixed-menu hidden xl:flex flex-col items-center py-4 w-[72px] fixed left-0 top-0 h-[80vh] border-r border-b border-gray-200 shadow-md z-[60] overflow-y-auto overflow-x-hidden">
       {/* Logo nhỏ */}
       <div className="mb-5 px-2">
         <Link href="/" aria-label="Trang chủ">

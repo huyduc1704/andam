@@ -126,7 +126,7 @@ export default function HomeSections({
 
       {/* ===== SECTION: SẢN PHẨM THEO DANH MỤC ===== */}
       {categories.map((cat) => (
-        <section key={cat.id} className="py-10 bg-white/60 backdrop-blur-sm">
+        <section key={cat.id} className="py-10">
           <div className="max-w-[1280px] mx-auto px-4">
             {/* Tiêu đề + Xem thêm */}
             <div className="flex items-center justify-between mb-6">
@@ -185,7 +185,7 @@ export default function HomeSections({
 
       {/* ===== SECTION: ĐỐI TÁC / THƯƠNG HIỆU ===== */}
       {partners.length > 0 && (
-        <section className="py-10 bg-white/80 backdrop-blur-sm overflow-hidden">
+        <section className="py-10 overflow-hidden">
 
           {/* Auto-scroll strip */}
           <div

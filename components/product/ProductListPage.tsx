@@ -9,7 +9,7 @@ interface ProductListPageProps {
 export default function ProductListPage({ title, products }: ProductListPageProps) {
   return (
     <MainLayout>
-      <div className="py-10 bg-white/60 backdrop-blur-sm min-h-screen">
+      <div className="py-10 min-h-screen">
         <div className="max-w-[1280px] mx-auto px-4">
           {/* Breadcrumb / Tiêu đề */}
           <div className="flex flex-col items-center justify-center mb-10">

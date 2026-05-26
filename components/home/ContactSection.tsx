@@ -24,7 +24,7 @@ export default function ContactSection({
   };
 
   return (
-    <section className="py-12 bg-white/80 backdrop-blur-sm">
+    <section className="py-12">
       <div className="max-w-[1280px] mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
           {/* Google Map - chiếm 7/12 cột */}
